@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+if ! command -v shellcheck >/dev/null 2>&1; then
+  echo "shellcheck not found. Install via apt (e.g. sudo apt-get install -y shellcheck)." >&2
+  exit 1
+fi
+
+if ! command -v shfmt >/dev/null 2>&1; then
+  echo "shfmt not found. Install with: go install mvdan.cc/sh/v3/cmd/shfmt@latest" >&2
+  exit 1
+fi
+
+files=()
+if command -v rg >/dev/null 2>&1; then
+  mapfile -t files < <(rg --files -g '*.sh' bootstrap scripts)
+else
+  mapfile -t files < <(find bootstrap scripts -type f -name '*.sh')
+fi
+
+if [ "${#files[@]}" -eq 0 ]; then
+  echo "No shell scripts found."
+  exit 0
+fi
+
+shellcheck "${files[@]}"
+shfmt -d -i 2 -ci "${files[@]}"

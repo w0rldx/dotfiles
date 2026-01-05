@@ -1,6 +1,6 @@
 # Ubuntu 24.04 Developer Bootstrap (WSL2 + native)
 
-Reproducible, idempotent bootstrap for Ubuntu 24.04 that installs a full developer distro and links dotfiles.
+Reproducible, idempotent bootstrap for Ubuntu 24.04 that installs a full developer distro and applies dotfiles via chezmoi.
 
 ## One-liner install
 
@@ -46,6 +46,23 @@ Native Linux VS Code is opt-in. Set the environment variable to install via the 
 INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
 ```
 
+## Dotfiles with chezmoi
+
+- Source state lives in `chezmoi/` (enabled via `.chezmoiroot`).
+- The installer runs `chezmoi init --apply <repo>` on first run, then `chezmoi apply` on subsequent runs.
+- Daily operations:
+  - `chezmoi diff`
+  - `chezmoi apply`
+  - `chezmoi update`
+
+## Shell quality
+
+- Lint: `./scripts/lint-shell.sh`
+- Format: `./scripts/format-shell.sh`
+- Prereqs:
+  - ShellCheck is installed by the bootstrap (or via `sudo apt-get install -y shellcheck`).
+  - shfmt via Go: `go install mvdan.cc/sh/v3/cmd/shfmt@latest`
+
 ## What this installs
 
 - Apt packages: zsh, git, curl, ca-certificates, fzf, ripgrep, fd-find (+ fd symlink), eza, zoxide, podman, podman-compose
@@ -67,7 +84,7 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
 
 - Ubuntu 24.04 only. Other distros/versions are rejected by preflight.
 - WSL best practice: keep repos inside the Linux filesystem (e.g. `~/src`), not `/mnt/c`.
-- Existing dotfiles are not overwritten; the installer skips paths that already exist.
+- Dotfiles are managed by chezmoi; re-running the installer reapplies the repo state.
 - After opening a new shell, run `p10k configure` to personalize the Powerlevel10k prompt.
 - Neovim and lazygit use GitHub “latest release” assets resolved at install time.
 - `zsh-syntax-highlighting` must remain last in the plugins list; this repo enforces that ordering.

@@ -16,6 +16,7 @@ packages=(
   fd-find
   eza
   zoxide
+  shellcheck
   podman
   podman-compose
 )

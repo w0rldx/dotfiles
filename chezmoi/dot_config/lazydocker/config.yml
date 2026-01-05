@@ -1,0 +1,1 @@
+# Lazydocker uses DOCKER_HOST from the shell environment (Podman socket).

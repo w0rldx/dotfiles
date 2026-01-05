@@ -32,6 +32,9 @@ check_cmd lazydocker
 check_cmd try
 check_cmd nvim
 check_cmd mise
+check_cmd chezmoi
+check_cmd shellcheck
+check_cmd shfmt
 
 if have_cmd systemctl; then
   if systemctl --user is-active --quiet podman.socket; then

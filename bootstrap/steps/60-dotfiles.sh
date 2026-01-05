@@ -6,17 +6,18 @@ BOOTSTRAP_ROOT="${BOOTSTRAP_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." &&
 # shellcheck source=bootstrap/lib/common.sh
 . "${BOOTSTRAP_ROOT}/bootstrap/lib/common.sh"
 
-zshrc_src="${BOOTSTRAP_ROOT}/dotfiles/zsh/.zshrc"
-zshenv_src="${BOOTSTRAP_ROOT}/dotfiles/zsh/.zshenv"
-aliases_src="${BOOTSTRAP_ROOT}/dotfiles/zsh/aliases.zsh"
-gitconfig_src="${BOOTSTRAP_ROOT}/dotfiles/git/.gitconfig"
-lazydocker_src="${BOOTSTRAP_ROOT}/dotfiles/lazydocker/config.yml"
+if ! have_cmd chezmoi; then
+  install_url="https://get.chezmoi.io"
+  tmpfile="$(download_to_tmp "${install_url}")"
+  mkdir -p "${HOME}/.local/bin"
+  bash "${tmpfile}" -- -b "${HOME}/.local/bin"
+  rm -f "${tmpfile}"
+fi
 
-link_file "${zshrc_src}" "${HOME}/.zshrc"
-link_file "${zshenv_src}" "${HOME}/.zshenv"
-link_file "${aliases_src}" "${HOME}/.config/zsh/aliases.zsh"
-link_file "${gitconfig_src}" "${HOME}/.gitconfig"
-link_file "${lazydocker_src}" "${HOME}/.config/lazydocker/config.yml"
+export PATH="${HOME}/.local/bin:${PATH}"
+if ! have_cmd chezmoi; then
+  die "chezmoi installation failed"
+fi
 
 nvim_dir="${HOME}/.config/nvim"
 if [ ! -d "${nvim_dir}" ]; then
@@ -28,7 +29,11 @@ else
   fi
 fi
 
-user_src="${BOOTSTRAP_ROOT}/dotfiles/nvim/lua/user"
-user_dest="${nvim_dir}/lua/user"
-mkdir -p "${nvim_dir}/lua"
-link_file "${user_src}" "${user_dest}"
+chezmoi_state_dir="${HOME}/.local/share/chezmoi"
+if [ -d "${chezmoi_state_dir}" ]; then
+  log "Applying chezmoi dotfiles"
+  chezmoi apply
+else
+  log "Initializing chezmoi"
+  chezmoi init --apply "${BOOTSTRAP_ROOT}"
+fi
