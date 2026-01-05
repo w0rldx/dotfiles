@@ -15,14 +15,14 @@ case "${arch}" in
     lazygit_arch="x86_64"
     nvim_arch="x86_64"
     ;;
-  aarch64|arm64)
+  aarch64 | arm64)
     lazygit_arch="arm64"
     nvim_arch="arm64"
     ;;
   *)
     die "Unsupported architecture: ${arch}"
     ;;
- esac
+esac
 
 install_gh() {
   if have_cmd gh; then
