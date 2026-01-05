@@ -4,10 +4,8 @@ Reproducible, idempotent bootstrap for Ubuntu 24.04 that installs a full develop
 
 ## One-liner install
 
-Replace `<REPO_URL>` with your GitHub repo URL:
-
 ```bash
-git clone <REPO_URL> ~/.dotfiles && bash ~/.dotfiles/bootstrap/install.sh
+git clone https://github.com/w0rldx/dotfiles.git ~/.dotfiles && bash ~/.dotfiles/bootstrap/install.sh
 ```
 
 ## WSL2 systemd requirement (mandatory for Podman rootless)
@@ -76,10 +74,12 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
   ./bootstrap/install.sh
   ```
 - Run doctor checks only:
+
   ```bash
   ./bootstrap/steps/90-doctor.sh
   ```
-  If the installer is not executable, either run:
+
+If the installer is not executable, either run:
 
 ```bash
 chmod +x ./bootstrap/install.sh
