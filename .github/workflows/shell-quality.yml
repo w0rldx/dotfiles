@@ -27,4 +27,6 @@ jobs:
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Lint shell
-        run: ./scripts/lint-shell.sh
+        run: |
+          chmod +x ./scripts/lint-shell.sh
+          ./scripts/lint-shell.sh
