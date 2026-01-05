@@ -7,7 +7,7 @@ Reproducible, idempotent bootstrap for Ubuntu 24.04 that installs a full develop
 Replace `<REPO_URL>` with your GitHub repo URL:
 
 ```bash
-git clone <REPO_URL> ~/.dotfiles && ~/.dotfiles/bootstrap/install.sh
+git clone <REPO_URL> ~/.dotfiles && bash ~/.dotfiles/bootstrap/install.sh
 ```
 
 ## WSL2 systemd requirement (mandatory for Podman rootless)
@@ -79,14 +79,14 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
   ```bash
   ./bootstrap/steps/90-doctor.sh
   ```
+  If the installer is not executable, either run:
 
-## Notes & assumptions
+```bash
+chmod +x ./bootstrap/install.sh
+```
 
-- Ubuntu 24.04 only. Other distros/versions are rejected by preflight.
-- WSL best practice: keep repos inside the Linux filesystem (e.g. `~/src`), not `/mnt/c`.
-- Dotfiles are managed by chezmoi; re-running the installer reapplies the repo state.
-- After opening a new shell, run `p10k configure` to personalize the Powerlevel10k prompt.
-- Neovim and lazygit use GitHub “latest release” assets resolved at install time.
-- `zsh-syntax-highlighting` must remain last in the plugins list; this repo enforces that ordering.
-- The mise installer URL is assumed to be `https://mise.run` (official). Update it if upstream changes.
-- For deterministic toolchains, pin exact versions in `mise/mise.toml`. A `mise.lock` can be generated and committed using mise tooling when needed.
+or execute it explicitly:
+
+```bash
+bash ./bootstrap/install.sh
+```

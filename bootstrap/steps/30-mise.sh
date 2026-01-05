@@ -26,5 +26,13 @@ config_src="${BOOTSTRAP_ROOT}/mise/mise.toml"
 config_dest="${HOME}/.config/mise/config.toml"
 link_file "${config_src}" "${config_dest}"
 
+if mise trust --help 2>/dev/null | grep -q -- '--yes'; then
+  mise trust --yes "${config_dest}"
+elif mise trust --help 2>/dev/null | grep -q -- '-y'; then
+  mise trust -y "${config_dest}"
+else
+  yes | mise trust "${config_dest}"
+fi
+
 log "Installing mise toolchains"
 MISE_CONFIG_FILE="${config_src}" mise install

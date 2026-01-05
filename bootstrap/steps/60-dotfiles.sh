@@ -10,7 +10,10 @@ if ! have_cmd chezmoi; then
   install_url="https://get.chezmoi.io"
   tmpfile="$(download_to_tmp "${install_url}")"
   mkdir -p "${HOME}/.local/bin"
-  bash "${tmpfile}" -- -b "${HOME}/.local/bin"
+  if ! sh "${tmpfile}" -- -b "${HOME}/.local/bin"; then
+    warn "chezmoi installer failed with -- -b, retrying with -b"
+    sh "${tmpfile}" -b "${HOME}/.local/bin"
+  fi
   rm -f "${tmpfile}"
 fi
 
