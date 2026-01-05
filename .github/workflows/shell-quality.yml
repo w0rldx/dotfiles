@@ -1,0 +1,32 @@
+name: Shell Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  shell-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Install shfmt
+        run: |
+          go install mvdan.cc/sh/v3/cmd/shfmt@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Lint shell
+        run: |
+          chmod +x ./scripts/lint-shell.sh
+          ./scripts/lint-shell.sh

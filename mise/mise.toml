@@ -1,0 +1,6 @@
+[tools]
+node = "lts"
+go = "latest"
+rust = "latest"
+dotnet = "latest"
+bun = "latest"
