@@ -29,12 +29,14 @@ is_wsl() {
 
 is_ubuntu() {
   [ -r /etc/os-release ] || return 1
+  # shellcheck disable=SC1091
   . /etc/os-release
   [ "${ID:-}" = "ubuntu" ]
 }
 
 ubuntu_version_id() {
   [ -r /etc/os-release ] || return 1
+  # shellcheck disable=SC1091
   . /etc/os-release
   printf '%s' "${VERSION_ID:-}"
 }
