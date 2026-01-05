@@ -45,7 +45,7 @@ download_to_tmp() {
   local url tmp
   url="$1"
   tmp="$(mktemp)"
-  log "Downloading ${url}"
+  log "Downloading ${url}" >&2
   curl -fsSL "${url}" -o "${tmp}"
   printf '%s' "${tmp}"
 }
