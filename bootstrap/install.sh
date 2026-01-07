@@ -16,6 +16,7 @@ steps=(
   "10-apt.sh"
   "20-zsh-ohmyzsh.sh"
   "30-mise.sh"
+  "31-python-uv.sh"
   "35-cargo-packages.sh"
   "36-npm-packages.sh"
   "40-podman.sh"
