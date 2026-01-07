@@ -12,6 +12,7 @@ log "Starting bootstrap"
 
 steps=(
   "00-preflight.sh"
+  "05-apt-ppa.sh"
   "10-apt.sh"
   "20-zsh-ohmyzsh.sh"
   "30-mise.sh"
