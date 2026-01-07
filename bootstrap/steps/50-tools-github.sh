@@ -108,70 +108,7 @@ install_try() {
   rm -f "${tmpfile}"
 }
 
-resolve_nvim_url() {
-  local base
-  base="https://github.com/neovim/neovim/releases/latest/download"
-
-  if [ "${nvim_arch}" = "x86_64" ]; then
-    candidates=(
-      "nvim-linux-x86_64.tar.gz"
-      "nvim-linux64.tar.gz"
-      "nvim-linux-x86_64.appimage"
-      "nvim.appimage"
-    )
-  else
-    candidates=(
-      "nvim-linux-arm64.tar.gz"
-      "nvim-linux-aarch64.tar.gz"
-    )
-  fi
-
-  for asset in "${candidates[@]}"; do
-    url="${base}/${asset}"
-    if curl -fsSLI "${url}" >/dev/null 2>&1; then
-      printf '%s' "${url}"
-      return 0
-    fi
-  done
-
-  return 1
-}
-
-install_neovim() {
-  if have_cmd nvim; then
-    log "neovim already installed"
-    return 0
-  fi
-
-  url="$(resolve_nvim_url)" || die "Unable to resolve Neovim release asset"
-  tmpfile="$(download_to_tmp "${url}")"
-  mkdir -p "${HOME}/.local/bin"
-
-  case "${url}" in
-    *.appimage)
-      install -m 0755 "${tmpfile}" "${HOME}/.local/bin/nvim"
-      rm -f "${tmpfile}"
-      ;;
-    *.tar.gz)
-      tmpdir="$(mktemp -d)"
-      tar -xzf "${tmpfile}" -C "${tmpdir}"
-      nvim_path="$(find "${tmpdir}" -type f -path '*/bin/nvim' | head -n 1)"
-      if [ -z "${nvim_path}" ]; then
-        rm -rf "${tmpfile}" "${tmpdir}"
-        die "Neovim binary not found in release archive"
-      fi
-      install -m 0755 "${nvim_path}" "${HOME}/.local/bin/nvim"
-      rm -rf "${tmpfile}" "${tmpdir}"
-      ;;
-    *)
-      rm -f "${tmpfile}"
-      die "Unsupported Neovim asset type"
-      ;;
-  esac
-}
-
 install_gh
 install_lazygit
 install_lazydocker
 install_try
-install_neovim
