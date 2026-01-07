@@ -44,15 +44,25 @@ Native Linux VS Code is opt-in. Set the environment variable to install via the 
 INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
 ```
 
+## Apt PPAs
+
+- The bootstrap adds `ppa:zhangsongcui3371/fastfetch` before apt installs.
+- Add additional PPAs in `bootstrap/steps/05-apt-ppa.sh`.
+
 ## Neovim (tarball) + LazyVim Starter
 
-- Neovim is installed from the official tarball into `/opt/nvim-linux-x86_64` (x86_64 only).
+- Neovim is installed from the official tarball into `/opt/nvim-linux-x86_64` (x86_64 only; other archs will error out).
 - PATH is set via zsh env: `export PATH="$PATH:/opt/nvim-linux-x86_64/bin"` (managed in `chezmoi/dot_zshenv`).
 - LazyVim Starter setup:
   - If `~/.config/nvim` already looks like LazyVim (and `.git` is removed), the step is a NOOP.
   - Existing Neovim dirs are backed up with `.bak` (timestamped if needed).
   - Starter is cloned to `~/.config/nvim` and `.git` is removed.
   - Overlay dotfiles from `chezmoi/dot_config/nvim/` are applied via `rsync -a` (no deletions).
+
+## Python + uv
+
+- Python is installed via mise (`python = "latest"` in `mise/mise.toml`).
+- uv is installed by `bootstrap/steps/31-python-uv.sh`.
 
 ## Dotfiles with chezmoi
 
@@ -63,6 +73,11 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
   - `chezmoi apply`
   - `chezmoi update`
 - Neovim overlay files live in `chezmoi/dot_config/nvim/` and are layered on top of the LazyVim Starter base.
+
+## Global package lists
+
+- NPM globals live in `bootstrap/packages/npm.txt` and are installed by `bootstrap/steps/36-npm-packages.sh`.
+- Cargo globals live in `bootstrap/packages/cargo.txt` and are installed by `bootstrap/steps/35-cargo-packages.sh`.
 
 ## Shell quality
 
@@ -90,6 +105,21 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
   ./bootstrap/steps/90-doctor.sh
   ```
 
+## Updating an existing install
+
+- Pull latest changes:
+  ```bash
+  cd ~/.dotfiles && git pull
+  ```
+- Re-run bootstrap (safe/idempotent):
+  ```bash
+  ./bootstrap/install.sh
+  ```
+- Targeted updates:
+  - `chezmoi apply`
+  - `./bootstrap/steps/36-npm-packages.sh`
+  - `./bootstrap/steps/35-cargo-packages.sh`
+
 If the installer is not executable, either run:
 
 ```bash
@@ -101,3 +131,5 @@ or execute it explicitly:
 ```bash
 bash ./bootstrap/install.sh
 ```
+
+Note: `bootstrap/steps/90-doctor.sh` re-execs via `zsh -lc` once so PATH updates from your zsh env are picked up.
