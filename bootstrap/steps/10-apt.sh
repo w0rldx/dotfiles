@@ -19,6 +19,7 @@ packages=(
   zoxide
   rsync
   shellcheck
+  fastfetch
   podman
   podman-compose
 )
