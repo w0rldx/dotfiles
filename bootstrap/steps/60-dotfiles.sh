@@ -22,16 +22,6 @@ if ! have_cmd chezmoi; then
   die "chezmoi installation failed"
 fi
 
-nvim_dir="${HOME}/.config/nvim"
-if [ ! -d "${nvim_dir}" ]; then
-  log "Cloning AstroNvim"
-  git clone --depth 1 https://github.com/AstroNvim/AstroNvim "${nvim_dir}"
-else
-  if [ ! -d "${nvim_dir}/.git" ]; then
-    warn "${nvim_dir} exists and is not a git repo; skipping AstroNvim clone"
-  fi
-fi
-
 chezmoi_state_dir="${HOME}/.local/share/chezmoi"
 if [ -d "${chezmoi_state_dir}" ]; then
   log "Applying chezmoi dotfiles"

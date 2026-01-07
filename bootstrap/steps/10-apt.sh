@@ -17,6 +17,7 @@ packages=(
   fd-find
   eza
   zoxide
+  rsync
   shellcheck
   podman
   podman-compose

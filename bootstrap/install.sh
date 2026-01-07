@@ -17,8 +17,10 @@ steps=(
   "30-mise.sh"
   "40-podman.sh"
   "50-tools-github.sh"
-  "70-vscode.sh"
+  "50-neovim.sh"
+  "55-lazyvim.sh"
   "60-dotfiles.sh"
+  "70-vscode.sh"
   "90-doctor.sh"
 )
 

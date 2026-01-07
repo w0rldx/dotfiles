@@ -6,6 +6,11 @@ BOOTSTRAP_ROOT="${BOOTSTRAP_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." &&
 # shellcheck source=bootstrap/lib/common.sh
 . "${BOOTSTRAP_ROOT}/bootstrap/lib/common.sh"
 
+if [ -z "${DOCTOR_RELOADED:-}" ] && have_cmd zsh; then
+  log "Reloading shell environment via zsh -lc"
+  exec zsh -lc 'DOCTOR_RELOADED=1 BOOTSTRAP_ROOT="$1" bash "$2"' _ "${BOOTSTRAP_ROOT}" "${BOOTSTRAP_ROOT}/bootstrap/steps/90-doctor.sh"
+fi
+
 check_cmd() {
   local name
   name="$1"
@@ -35,6 +40,21 @@ check_cmd mise
 check_cmd chezmoi
 check_cmd shellcheck
 check_cmd shfmt
+
+if have_cmd nvim; then
+  if nvim --version >/dev/null 2>&1; then
+    log "OK: nvim --version"
+  else
+    warn "nvim --version failed"
+  fi
+fi
+
+if [ -d "${HOME}/.config/nvim/lua" ]; then
+  log "OK: LazyVim config detected (run :LazyHealth in Neovim)"
+else
+  warn "MISSING: LazyVim config (~/.config/nvim/lua not found)"
+  warn "Hint: run Neovim and execute :LazyHealth"
+fi
 
 if have_cmd systemctl; then
   if systemctl --user is-active --quiet podman.socket; then
