@@ -11,6 +11,7 @@ packages=(
   git
   curl
   ca-certificates
+  gcc
   fzf
   ripgrep
   fd-find
