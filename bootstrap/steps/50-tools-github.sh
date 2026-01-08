@@ -13,11 +13,9 @@ arch="$(uname -m)"
 case "${arch}" in
   x86_64)
     lazygit_arch="x86_64"
-    nvim_arch="x86_64"
     ;;
   aarch64 | arm64)
     lazygit_arch="arm64"
-    nvim_arch="arm64"
     ;;
   *)
     die "Unsupported architecture: ${arch}"
