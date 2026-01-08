@@ -1,3 +1,3 @@
 return {
-  -- Minimal user layer for AstroNvim.
+  -- Minimal user layer for LazyVim.
 }

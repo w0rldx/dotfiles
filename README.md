@@ -4,10 +4,8 @@ Reproducible, idempotent bootstrap for Ubuntu 24.04 that installs a full develop
 
 ## One-liner install
 
-Replace `<REPO_URL>` with your GitHub repo URL:
-
 ```bash
-git clone <REPO_URL> ~/.dotfiles && bash ~/.dotfiles/bootstrap/install.sh
+git clone https://github.com/w0rldx/dotfiles.git ~/.dotfiles && bash ~/.dotfiles/bootstrap/install.sh
 ```
 
 ## WSL2 systemd requirement (mandatory for Podman rootless)
@@ -46,6 +44,26 @@ Native Linux VS Code is opt-in. Set the environment variable to install via the 
 INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
 ```
 
+## Apt PPAs
+
+- The bootstrap adds `ppa:zhangsongcui3371/fastfetch` before apt installs.
+- Add additional PPAs in `bootstrap/steps/05-apt-ppa.sh`.
+
+## Neovim (tarball) + LazyVim Starter
+
+- Neovim is installed from the official tarball into `/opt/nvim-linux-x86_64` (x86_64 only; other archs will error out).
+- PATH is set via zsh env: `export PATH="$PATH:/opt/nvim-linux-x86_64/bin"` (managed in `chezmoi/dot_zshenv`).
+- LazyVim Starter setup:
+  - If `~/.config/nvim` already looks like LazyVim (and `.git` is removed), the step is a NOOP.
+  - Existing Neovim dirs are backed up with `.bak` (timestamped if needed).
+  - Starter is cloned to `~/.config/nvim` and `.git` is removed.
+  - Overlay dotfiles from `chezmoi/dot_config/nvim/` are applied via `rsync -a` (no deletions).
+
+## Python + uv
+
+- Python is installed via mise (`python = "latest"` in `mise/mise.toml`).
+- uv is installed by `bootstrap/steps/31-python-uv.sh`.
+
 ## Dotfiles with chezmoi
 
 - Source state lives in `chezmoi/` (enabled via `.chezmoiroot`).
@@ -54,6 +72,12 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
   - `chezmoi diff`
   - `chezmoi apply`
   - `chezmoi update`
+- Neovim overlay files live in `chezmoi/dot_config/nvim/` and are layered on top of the LazyVim Starter base.
+
+## Global package lists
+
+- NPM globals live in `bootstrap/packages/npm.txt` and are installed by `bootstrap/steps/36-npm-packages.sh`.
+- Cargo globals live in `bootstrap/packages/cargo.txt` and are installed by `bootstrap/steps/35-cargo-packages.sh`.
 
 ## Shell quality
 
@@ -65,8 +89,8 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
 
 ## What this installs
 
-- Apt packages: zsh, git, curl, ca-certificates, fzf, ripgrep, fd-find (+ fd symlink), eza, zoxide, podman, podman-compose
-- From official sources/releases: GitHub CLI (apt repo), Oh-My-Zsh, Powerlevel10k theme, zsh-autosuggestions, zsh-syntax-highlighting, mise, lazygit, lazydocker, try, Neovim
+- Apt packages: zsh, git, curl, ca-certificates, fzf, ripgrep, fd-find (+ fd symlink), eza, zoxide, rsync, podman, podman-compose
+- From official sources/releases: GitHub CLI (apt repo), Oh-My-Zsh, Powerlevel10k theme, zsh-autosuggestions, zsh-syntax-highlighting, mise, lazygit, lazydocker, try, Neovim (tarball to /opt)
 - Toolchains via mise: Rust (cargo), Go, .NET SDK, Node.js LTS, Bun
 
 ## Usage
@@ -76,10 +100,27 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
   ./bootstrap/install.sh
   ```
 - Run doctor checks only:
+
   ```bash
   ./bootstrap/steps/90-doctor.sh
   ```
-  If the installer is not executable, either run:
+
+## Updating an existing install
+
+- Pull latest changes:
+  ```bash
+  cd ~/.dotfiles && git pull
+  ```
+- Re-run bootstrap (safe/idempotent):
+  ```bash
+  ./bootstrap/install.sh
+  ```
+- Targeted updates:
+  - `chezmoi apply`
+  - `./bootstrap/steps/36-npm-packages.sh`
+  - `./bootstrap/steps/35-cargo-packages.sh`
+
+If the installer is not executable, either run:
 
 ```bash
 chmod +x ./bootstrap/install.sh
@@ -90,3 +131,5 @@ or execute it explicitly:
 ```bash
 bash ./bootstrap/install.sh
 ```
+
+Note: `bootstrap/steps/90-doctor.sh` re-execs via `zsh -lc` once so PATH updates from your zsh env are picked up.

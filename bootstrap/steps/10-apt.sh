@@ -11,12 +11,15 @@ packages=(
   git
   curl
   ca-certificates
+  gcc
   fzf
   ripgrep
   fd-find
   eza
   zoxide
+  rsync
   shellcheck
+  fastfetch
   podman
   podman-compose
 )
