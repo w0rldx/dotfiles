@@ -41,7 +41,7 @@ while IFS= read -r line || [ -n "${line}" ]; do
     log "Installing npm package: ${line}"
     npm install -g "${line}"
   fi
-done < "${packages_file}"
+done <"${packages_file}"
 
 if [ "${count}" -eq 0 ]; then
   log "No npm packages configured"

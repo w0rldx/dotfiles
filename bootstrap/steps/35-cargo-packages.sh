@@ -43,7 +43,7 @@ while IFS= read -r line || [ -n "${line}" ]; do
     log "Installing cargo package: ${line}"
     cargo install "${line}"
   fi
-done < "${packages_file}"
+done <"${packages_file}"
 
 if [ "${count}" -eq 0 ]; then
   log "No cargo packages configured"

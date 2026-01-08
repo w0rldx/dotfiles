@@ -11,9 +11,9 @@ need_cmd git
 nvim_config="${HOME}/.config/nvim"
 
 is_lazyvim_starter() {
-  [ -d "${nvim_config}" ] \
-    && [ ! -d "${nvim_config}/.git" ] \
-    && [ -f "${nvim_config}/lua/config/lazy.lua" ]
+  [ -d "${nvim_config}" ] &&
+    [ ! -d "${nvim_config}/.git" ] &&
+    [ -f "${nvim_config}/lua/config/lazy.lua" ]
 }
 
 backup_path() {
