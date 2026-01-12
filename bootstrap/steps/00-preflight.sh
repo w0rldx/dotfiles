@@ -23,9 +23,9 @@ fi
 
 if is_wsl; then
   if [ ! -d /run/systemd/system ]; then
+    warn "WSL detected, but systemd is not running. Using rootless Docker session fallback."
     cat >&2 <<'EOM'
-[ERROR] WSL detected, but systemd is not running.
-Enable systemd in /etc/wsl.conf:
+[WARN] For systemd user services (recommended), enable systemd in /etc/wsl.conf:
 
 [boot]
 systemd=true
@@ -35,7 +35,6 @@ Then run from Windows:
 
 Re-open your WSL distro and rerun the installer.
 EOM
-    exit 1
   fi
 fi
 

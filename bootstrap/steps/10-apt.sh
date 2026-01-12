@@ -20,8 +20,6 @@ packages=(
   rsync
   shellcheck
   fastfetch
-  podman
-  podman-compose
 )
 
 log "Updating apt metadata"

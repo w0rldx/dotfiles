@@ -1,1 +1,1 @@
-# Lazydocker uses DOCKER_HOST from the shell environment (Podman socket).
+# Lazydocker uses DOCKER_HOST from the shell environment (rootless Docker socket).

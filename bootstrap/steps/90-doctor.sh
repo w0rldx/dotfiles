@@ -29,8 +29,7 @@ check_cmd rg
 check_cmd fd
 check_cmd eza
 check_cmd zoxide
-check_cmd podman
-check_cmd podman-compose
+check_cmd docker
 check_cmd gh
 check_cmd lazygit
 check_cmd lazydocker
@@ -57,19 +56,39 @@ else
 fi
 
 if have_cmd systemctl; then
-  if systemctl --user is-active --quiet podman.socket; then
-    log "OK: podman.socket (user)"
-  else
-    warn "MISSING: podman.socket (user)"
+  if [ -d /run/systemd/system ]; then
+    if systemctl --user is-active --quiet docker; then
+      log "OK: docker.service (user)"
+    else
+      warn "MISSING: docker.service (user)"
+    fi
   fi
 fi
 
-if have_cmd podman; then
-  if podman info --format '{{.Host.Security.Rootless}}' >/dev/null 2>&1; then
-    rootless="$(podman info --format '{{.Host.Security.Rootless}}')"
-    log "Podman rootless: ${rootless}"
+runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+socket="${runtime_dir}/docker.sock"
+if [ -S "${socket}" ]; then
+  log "OK: docker.sock (${socket})"
+else
+  warn "MISSING: docker.sock (${socket})"
+fi
+
+if have_cmd docker; then
+  if docker compose version >/dev/null 2>&1; then
+    log "OK: docker compose"
   else
-    warn "Podman info unavailable"
+    warn "docker compose unavailable"
+  fi
+
+  security_opts="$(docker info --format '{{json .SecurityOptions}}' 2>/dev/null || true)"
+  if [ -n "${security_opts}" ]; then
+    if printf '%s' "${security_opts}" | grep -q 'rootless'; then
+      log "Docker rootless: true"
+    else
+      warn "Docker rootless: false"
+    fi
+  else
+    warn "Docker info unavailable"
   fi
 fi
 

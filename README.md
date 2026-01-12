@@ -8,9 +8,9 @@ Reproducible, idempotent bootstrap for Ubuntu 24.04 that installs a full develop
 git clone https://github.com/w0rldx/dotfiles.git ~/.dotfiles && bash ~/.dotfiles/bootstrap/install.sh
 ```
 
-## WSL2 systemd requirement (mandatory for Podman rootless)
+## WSL2 systemd (recommended for rootless Docker services)
 
-Podman rootless socket activation uses `systemctl --user`, which requires systemd. If running in WSL2:
+Rootless Docker uses systemd user services when available. If systemd is not running, the bootstrap falls back to starting `dockerd-rootless.sh` in the user session and zsh auto-starts it on login. If running in WSL2 and you want systemd:
 
 1. Edit `/etc/wsl.conf`:
 
@@ -28,6 +28,13 @@ wsl.exe --shutdown
 3. Re-open your WSL distro and rerun the installer.
 
 Microsoft Learn: https://learn.microsoft.com/windows/wsl/systemd
+
+## Docker (rootless)
+
+- Installed from Docker's official Ubuntu apt repo (docker-ce, docker-ce-rootless-extras, etc.).
+- `DOCKER_HOST` is set to `unix://$XDG_RUNTIME_DIR/docker.sock` with a fallback to `~/.docker/run` when systemd is unavailable.
+- With systemd: user service `docker.service` is enabled and linger is turned on.
+- Without systemd: `~/.config/docker/rootless-session.sh` starts `dockerd-rootless.sh` on login if it's not already running.
 
 ## VS Code on WSL (recommended)
 
@@ -89,8 +96,8 @@ INSTALL_VSCODE_LINUX=1 ./bootstrap/install.sh
 
 ## What this installs
 
-- Apt packages: zsh, git, curl, ca-certificates, fzf, ripgrep, fd-find (+ fd symlink), eza, zoxide, rsync, podman, podman-compose
-- From official sources/releases: GitHub CLI (apt repo), Oh-My-Zsh, Powerlevel10k theme, zsh-autosuggestions, zsh-syntax-highlighting, mise, lazygit, lazydocker, try, Neovim (tarball to /opt)
+- Apt packages: zsh, git, curl, ca-certificates, fzf, ripgrep, fd-find (+ fd symlink), eza, zoxide, rsync, shellcheck, fastfetch
+- From official sources/releases: GitHub CLI (apt repo), Docker Engine (official apt repo), Oh-My-Zsh, Powerlevel10k theme, zsh-autosuggestions, zsh-syntax-highlighting, mise, lazygit, lazydocker, try, Neovim (tarball to /opt)
 - Toolchains via mise: Rust (cargo), Go, .NET SDK, Node.js LTS, Bun
 
 ## Usage

@@ -19,7 +19,7 @@ steps=(
   "31-python-uv.sh"
   "35-cargo-packages.sh"
   "36-npm-packages.sh"
-  "40-podman.sh"
+  "40-docker.sh"
   "50-tools-github.sh"
   "50-neovim.sh"
   "55-lazyvim.sh"

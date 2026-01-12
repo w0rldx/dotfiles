@@ -18,3 +18,7 @@ fi
 if [ -f "$HOME/.config/zsh/aliases.zsh" ]; then
   source "$HOME/.config/zsh/aliases.zsh"
 fi
+
+if [ -f "$HOME/.config/docker/rootless-session.sh" ]; then
+  "$HOME/.config/docker/rootless-session.sh" >/dev/null 2>&1 || true
+fi
