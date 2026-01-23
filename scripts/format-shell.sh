@@ -19,4 +19,10 @@ if [ "${#files[@]}" -eq 0 ]; then
   exit 0
 fi
 
+# 1) Format
 shfmt -w -i 2 -ci "${files[@]}"
+
+# 2) Normalize EOL to LF (convert CRLF -> LF, also lone CR -> LF)
+#    -pi: in-place
+#    -e : program
+perl -pi -e 's/\r\n?/\n/g' "${files[@]}"

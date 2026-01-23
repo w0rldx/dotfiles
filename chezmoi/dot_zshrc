@@ -22,3 +22,6 @@ fi
 if [ -f "$HOME/.config/docker/rootless-session.sh" ]; then
   "$HOME/.config/docker/rootless-session.sh" >/dev/null 2>&1 || true
 fi
+
+# opencode
+export PATH=/home/w0rldx/.opencode/bin:$PATH
